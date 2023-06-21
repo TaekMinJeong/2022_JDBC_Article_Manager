@@ -84,6 +84,64 @@ public class Main {
 //				System.out.println(article);
 				
 //				System.out.printf("%d번 글이 생성되었습니다.\n", article.id);
+			}else if(cmd.startsWith("article modify ")) {
+				int id = Integer.parseInt(cmd.split(" ")[2]);
+				System.out.printf("== %d번 게시물 수정 ==\n", id);
+				
+				System.out.printf("제목 : ");
+				String title = sc.nextLine();
+				System.out.printf("내용 : ");
+				String body = sc.nextLine();
+				
+				
+				
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					con = DriverManager.getConnection(
+							"jdbc:mysql://localhost:3306/jdbc_article_manager?serverTimezone=UTC",	//	DB URL
+							"root", "");	//	USER_NAME 과 PASSWORD
+					System.out.println("Success");
+					
+					String sql = "UPDATE article "
+							+ "SET updateDate = NOW(), "
+							+ "title = '" + title + "', "
+							+ "`body` = '" + body + "' "
+							+ "WHERE id = " + id + ";";
+					
+					System.out.println(sql);
+					
+					pstmt = con.prepareStatement(sql);
+					
+					pstmt.executeUpdate();
+					
+				}catch(SQLException ex) {
+					System.out.println("SQLException" + ex);
+					ex.printStackTrace();
+				}
+				catch(Exception ex) {
+					System.out.println("Exception" + ex);
+					ex.printStackTrace();
+				}finally {
+					try {
+						if(pstmt != null && !pstmt.isClosed()) {
+							con.close();
+						}
+					}catch(SQLException e) {
+						e.printStackTrace();
+					}
+					try {
+						if(con != null && !con.isClosed()) {
+							con.close();
+						}
+					}catch(SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				System.out.printf("%d번 글이 수정되었습니다.\n", id);
 			}else if(cmd.equals("article list")) {
 				System.out.println("== 게시물 리스트 ==");
 				
