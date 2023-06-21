@@ -1,5 +1,9 @@
 package com.KoreaIT.example.JAM;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,6 +31,58 @@ public class Main {
 				
 				Article article = new Article(id, title, body);
 				articles.add(article);
+				
+				
+				
+				Connection con = null;
+				PreparedStatement pstmt = null;
+				
+				try {
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					con = DriverManager.getConnection(
+							"jdbc:mysql://localhost:3306/jdbc_article_manager?serverTimezone=UTC",	//	DB URL
+							"root", "");	//	USER_NAME 과 PASSWORD
+					System.out.println("Success");
+					
+					String sql = "INSERT INTO article "
+							+ "SET regDate = NOW(), "
+							+ "updateDate = NOW(), "
+							+ "title = '" + title + "', "
+							+ "`body` = '" + body + "';";
+					
+					System.out.println(sql);
+					
+					pstmt = con.prepareStatement(sql);
+					
+					int row = pstmt.executeUpdate();
+					System.out.printf("row : " + row);
+					
+				}catch(SQLException ex) {
+					System.out.println("SQLException" + ex);
+					ex.printStackTrace();
+				}
+				catch(Exception ex) {
+					System.out.println("Exception" + ex);
+					ex.printStackTrace();
+				}finally {
+					try {
+						if(pstmt != null && !pstmt.isClosed()) {
+							con.close();
+						}
+					}catch(SQLException e) {
+						e.printStackTrace();
+					}
+					try {
+						if(con != null && !con.isClosed()) {
+							con.close();
+						}
+					}catch(SQLException e) {
+						e.printStackTrace();
+					}
+				}
+				
+				
+				
 				lastArticleId++;
 				
 //				System.out.println(article);
