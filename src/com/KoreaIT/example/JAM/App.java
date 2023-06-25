@@ -104,6 +104,28 @@ public class App {
 			DBUtil.update(conn, sql);
 			
 			System.out.printf("%d번 글이 수정되었습니다.\n", id);
+		}else if(cmd.startsWith("article delete ")) {
+			int id = Integer.parseInt(cmd.split(" ")[2]);
+			System.out.printf("== %d번 게시물 삭제 ==\n", id);
+			
+			SecSql sql = new SecSql();
+			sql.append("SELECT COUNT(*) FROM article");
+			sql.append("WHERE id = ?", id);
+			
+			int articlesCount = DBUtil.selectRowIntValue(conn, sql);
+			
+			if(articlesCount == 0) {
+				System.out.printf("%d번 게시글은 존재하지 않습니다\n", id);
+				return;
+			}
+			
+			sql = new SecSql();
+			sql.append("DELETE FROM article");
+			sql.append("WHERE id = ?", id);
+			
+			DBUtil.delete(conn, sql);
+			
+			System.out.printf("%d번 글이 삭제되었습니다.\n", id);
 		}else if(cmd.equals("article list")) {
 			System.out.println("== 게시물 리스트 ==");
 			
