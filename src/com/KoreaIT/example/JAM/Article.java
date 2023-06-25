@@ -29,6 +29,7 @@ public class Article extends Object {
 		this.regDate = (LocalDateTime) articleMap.get("regDate");
 		this.updateDate = (LocalDateTime) articleMap.get("updateDate");
 		this.title = (String) articleMap.get("title");
+		this.body = (String) articleMap.get("body");
 	}
 	
 	@Override
