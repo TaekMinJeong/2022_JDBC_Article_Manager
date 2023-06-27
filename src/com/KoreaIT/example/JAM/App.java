@@ -81,6 +81,18 @@ public class App {
 					continue;
 				}
 				
+				SecSql sql = new SecSql();
+				sql.append("SELECT COUNT(*) > 0");
+				sql.append("FROM `member`");
+				sql.append("WHERE loginId = ?", loginId);
+				
+				boolean isLoginIdDup = DBUtil.selectRowBooleanValue(conn, sql);
+				
+				if(isLoginIdDup) {
+					System.out.printf("%s은(는) 이미 사용중인 아이디입니다.\n", loginId);
+					continue;
+				}
+				
 				while(true) {
 					boolean loginPwCheck = true;
 					
@@ -144,7 +156,7 @@ public class App {
 			
 			
 			
-			int id = DBUtil.insert(conn, sql);
+			DBUtil.insert(conn, sql);
 			
 			System.out.printf("%s회원님, 가입 되었습니다..\n", name);
 			
